@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ChangeEvent, FormEvent, useState } from "react";
 
 export default function Login() {
@@ -13,6 +14,8 @@ export default function Login() {
 
   console.log(initialState);
   const [data, setData] = useState<FormState>(initialState);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,9 +25,28 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setData(initialState);
+    setLoading(true);
+    setError(null);
+    try {
+      if (!data.email || !data.password) {
+        throw new Error("Please fill in all fields.");
+      }
+
+      // Simulate an API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      console.log("Form submitted successfully:", data);
+
+      // Reset form
+      setData(initialState);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -42,7 +64,10 @@ export default function Login() {
         placeholder="enter your password"
         onChange={handleChange}
       />
-      <button>Submit</button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <button type="submit" disabled={loading}>
+        {loading ? "Loading..." : "Submit"}
+      </button>
     </form>
   );
 }
