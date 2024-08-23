@@ -1,7 +1,15 @@
-import React from 'react'
+import React from "react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
-export default function Welcome() {
+const Welcome: React.FC = () => {
+  const navigate: NavigateFunction = useNavigate();
+
   return (
-    <div>Welcome</div>
-  )
-}
+    <>
+      <div>Welcome</div>
+      <button onClick={() => navigate("/login")}>hello</button>
+    </>
+  );
+};
+
+export default Welcome;
